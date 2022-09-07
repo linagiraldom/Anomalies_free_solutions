@@ -34,10 +34,10 @@ if os.name in ('nt', 'dos'):
 def main():
     setup(
         # Application name:
-        name="desoper",
+        name="abc123",
 
         # Version number (initial):
-        version="0.0.3",
+        version="0.0.1",
 
         # Application author details:
         author="restrepo",
