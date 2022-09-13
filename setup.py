@@ -51,6 +51,7 @@ def main():
 
         # Details
         url="https://github.com/restrepo/DevOps",
+        scripts=['bin/hello'],
 
         license="BSD",
 
