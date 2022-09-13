@@ -1,6 +1,26 @@
 #!/usr/bin/env python3
 from desoper import abc123
+import argparse
+parser = argparse.ArgumentParser(
+          description='Exclamative salutation to the World')
+# See: https://stackoverflow.com/a/5271692/2268280
+# Define option without any argument args.Spanish == True
+parser.add_argument('-S', '--Spanish',
+                    # dest='Spanish',
+                    action='store_true',
+                    help='Change language to Spanish')
 
+# Define option with argument
+parser.add_argument('--extra_message', type=str,
+                    # required=True,
+                    help='Extra message to be added to initial string')
+
+args = parser.parse_args()
 
 if __name__ == '__main__':
-    print(abc123.hello())
+    s = abc123.hello()
+    if args.Spanish:
+        s = s.replace('Hello', 'Hola').replace('World', '¡Mundo')
+    if args.extra_message:
+        s = s + f' {args.extra_message}'
+    print(s)
