@@ -15,6 +15,10 @@ parser.add_argument('--extra_message', type=str,
                     # required=True,
                     help='Extra message to be added to initial string')
 
+# Positional argument (with optional value through `nargs`):
+# https://stackoverflow.com/questions/4480075/argparse-optional-positional-arguments
+parser.add_argument('file', nargs='?', default='', help='Optional output file')
+
 args = parser.parse_args()
 
 if __name__ == '__main__':
@@ -23,4 +27,8 @@ if __name__ == '__main__':
         s = s.replace('Hello', 'Hola').replace('World', '¡Mundo')
     if args.extra_message:
         s = s + f' {args.extra_message}'
+    if args.file:
+        f = open(args.file, 'w')
+        f.write(f'{s}\n')
+        f.close()
     print(s)
