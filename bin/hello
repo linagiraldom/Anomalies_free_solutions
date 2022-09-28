@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from desoper import abc123
+from anomalies_sol import Anomalies_free_solutions
 import argparse
 parser = argparse.ArgumentParser(
           description='Exclamative salutation to the World')
@@ -22,7 +22,7 @@ parser.add_argument('file', nargs='?', default='', help='Optional output file')
 args = parser.parse_args()
 
 if __name__ == '__main__':
-    s = abc123.hello()
+    s = Anomalies_free_solutions.hello()
     if args.Spanish:
         s = s.replace('Hello', 'Hola').replace('World', '¡Mundo')
     if args.extra_message:

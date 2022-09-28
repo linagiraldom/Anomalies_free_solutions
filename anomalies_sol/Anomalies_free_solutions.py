@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 r'''
-abc123 module
+Anomalies_free_solutions module
 '''
 
 
