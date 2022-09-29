@@ -6,6 +6,8 @@ Anomalies_free_solutions module
 
 from multiprocessing import Pool
 from multiprocessing import cpu_count
+
+from pkg_resources import resource_listdir
 from anomalies import anomaly
 import numpy as np
 from itertools import permutations
@@ -35,7 +37,7 @@ def m_value(n):
     return int(m)
 
 
-def all_comb_array(size):
+def all_comb_array(size, d_max):
     """
     A partir de un arreglo con los números [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
     se crean arreglos de tamaño `size` que contengan todas
@@ -51,7 +53,7 @@ def all_comb_array(size):
     `final_combinations`: list, lista de tuplas de listas con todas las
     combinaciones de tamaño `size`
     """
-    d_max = 15
+
     lista = np.arange(-d_max, d_max + 1)
 
     """
@@ -81,7 +83,7 @@ def all_comb_array(size):
     return final_combinations
 
 
-def l_and_k_arrays(n):
+def l_and_k_arrays(n, d_max):
     """
     Genera arreglos para l y k dependiendo de `n` con los cuales se van a
     obtener las soluciones quirales
@@ -97,12 +99,12 @@ def l_and_k_arrays(n):
     """
     m = m_value(n)
 
-    l_dummy = all_comb_array(m)
+    l_dummy = all_comb_array(m, d_max)
 
     # Para el caso impar: l y k tienen dimensiones diferentes,
     # los combinamos diferente :P
     if n % 2 != 0:
-        k_dummy = all_comb_array(m + 1)
+        k_dummy = all_comb_array(m + 1, d_max)
         # print(len(l_dummy), len(k_dummy))
 
         all_combinations_lk = [(i, j) for i in l_dummy for j in k_dummy]
@@ -148,7 +150,7 @@ def is_vectorlike_solution(solution):
     return isvectorlike
 
 
-def chiral_solution(n):
+def chiral_solution(vector):
     """
     Soluciones quirales para `n` mayor o igual a 5
 
@@ -162,24 +164,19 @@ def chiral_solution(n):
     (incluye repetidas). Tiene la estructura:
     dict_sol = [{'n':int, 'l': list, 'k':list, 'z': list, 'gcd':int}]
     """
-
-    vector = l_and_k_arrays(n)
+    
     dict_sol = []
 
-    for i in vector:
-        # print(i[0], i[1])
+    anomaly.free(vector[0], vector[1])
+    solution = anomaly.free.simplified
+    gcd = anomaly.free.gcd
 
-        anomaly.free(i[0], i[1])
-        solution = anomaly.free.simplified
-        gcd = anomaly.free.gcd
-
-        if solution[0] < 0:
-            solution = -solution
-        abs_sol = np.unique(abs(solution))
-        # Verificamos que sea una solución quiral y la guardamos
-        if is_vectorlike_solution(solution) is False and np.all(abs_sol <= 32):
-            dict_sol += [{"n": n, "l": i[0], "k": i[1],
-                         "z": solution, "gcd": gcd}]
+    if solution[0] < 0:
+        solution = -solution
+    # Verificamos que sea una solución quiral y la guardamos
+    if is_vectorlike_solution(solution) is False:
+        dict_sol += [{"l": vector[0], "k": vector[1],
+                     "z": solution, "gcd": gcd}]
 
     return dict_sol
 
@@ -187,7 +184,7 @@ def chiral_solution(n):
 # # Quitando soluciones duplicadas
 
 
-def unique_solutions(sols, save=False):
+def unique_solutions(sols, save=False, zmax=32):
     """
     Mantiene las soluciones quirales únicas y si se requiere se
     guardan en un archivo json.
@@ -203,14 +200,15 @@ def unique_solutions(sols, save=False):
     `df`: dataframe, dataframe con las soluciones quirales únicas.
     """
 
-    df = pd.DataFrame()
+    df = pd.DataFrame(sols)
+    df.sort_values('gcd', inplace=True)
+    df['zmax'] = df['z'].agg(lambda x: np.all(np.unique(abs(x)) <= zmax))
+    df = df[df.zmax]
+    df = df.drop('zmax', axis='columns').reset_index(drop=True)
+    df['zs'] = df['z'].astype(str)
+    df = df.drop_duplicates('zs')
+    df = df.drop('zs', axis='columns').reset_index(drop=True)
 
-    df_dummy = pd.DataFrame(sols[0])
-    df_dummy.sort_values('gcd', inplace=True)
-    df_dummy['zs'] = df_dummy['z'].astype(str)
-    df_dummy = df_dummy.drop_duplicates('zs')
-    df_dummy = df_dummy.drop('zs', axis='columns').reset_index(drop=True)
-    df = pd.concat([df, df_dummy], ignore_index=True)
 
     if save:
         n = df["n"].max()
@@ -239,6 +237,26 @@ def eq_satisfied(x):
     eq_1 = np.sum(x)
 
     return eq_3, eq_1
+
+
+def run(n, use=7, zmax=32, dmax=15):
+
+    results = 0
+    processes = cpu_count()  # Para saber cuántos procesadores tengo
+    if use <= processes:
+        pool = Pool(processes=use)
+    else:
+        pool = Pool() # Usar todos por defecto
+
+    # Calculando los z quirales
+    vector_lk = l_and_k_arrays(n, dmax)
+    results = pool.map(chiral_solution, vector_lk)
+    pool.close()
+    pool.join()
+
+    results = [res[0] for res in results if res != []]
+    df_sols = unique_solutions(results, zmax=zmax)
+    return df_sols
 
 
 if __name__ == '__main__':
@@ -281,3 +299,4 @@ if __name__ == '__main__':
     for sols in df_sols["z"]:
         eq3, eq1 = eq_satisfied(sols)
         assert eq3 == 0 and eq1 == 0
+
