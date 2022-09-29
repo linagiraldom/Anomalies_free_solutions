@@ -3,16 +3,15 @@ r'''
 Anomalies_free_solutions module
 '''
 
-
 from multiprocessing import Pool
 from multiprocessing import cpu_count
-
-from pkg_resources import resource_listdir
+import warnings
 from anomalies import anomaly
 import numpy as np
 from itertools import permutations
 from itertools import combinations_with_replacement
 import pandas as pd
+warnings.simplefilter('ignore')
 
 
 # # Functions
@@ -45,8 +44,9 @@ def all_comb_array(size, d_max):
 
     Parameters
     ----------
-    `size`: int, tamaño de los arreglos que se quieren crear con las
-    combinaciones de los números entre -5 y 5, sin considerar el cero
+    `size`: int, tamaño de los arreglos que se quieren crear
+    `d_max`: int, número entero máximo para generar los arreglos,
+    e.j., np.arange(-d_max,d_max)
 
     Returns
     -------
@@ -91,6 +91,9 @@ def l_and_k_arrays(n, d_max):
     Parameters
     ----------
     `n`: int, number of elements in the solution
+    `d_max`: int, número entero máximo para generar los arreglos,
+    e.j., np.arange(-d_max,d_max). Se usa en la función all_comb_array
+    que es llamada internamente dentro de esta función
 
     Returns
     -------
@@ -156,7 +159,7 @@ def chiral_solution(vector):
 
     Parameters
     ----------
-    `n`: int, number of elements in the solution
+    `vector`: list, lista de listas que contiene a los vectores l y k
 
     Returns
     -------
@@ -164,7 +167,7 @@ def chiral_solution(vector):
     (incluye repetidas). Tiene la estructura:
     dict_sol = [{'n':int, 'l': list, 'k':list, 'z': list, 'gcd':int}]
     """
-    
+
     dict_sol = []
 
     anomaly.free(vector[0], vector[1])
@@ -194,10 +197,13 @@ def unique_solutions(sols, save=False, zmax=32):
     `sols`: list, lista que contienen las soluciones en formato diccionario
     `save`: bool, en caso de ser True guarda las soluciones.
     Por defecto es igual a False.
+    `zmax`: int, número entero máximo en valor absoluto que puede contener las
+    soluciones. Por defecto se tiene zmax=32.
 
     Returns
     -------
-    `df`: dataframe, dataframe con las soluciones quirales únicas.
+    `df`: dataframe, dataframe con las soluciones quirales únicas. Contiene las
+    columnas l, k, z y gcd.
     """
 
     df = pd.DataFrame(sols)
@@ -208,7 +214,6 @@ def unique_solutions(sols, save=False, zmax=32):
     df['zs'] = df['z'].astype(str)
     df = df.drop_duplicates('zs')
     df = df.drop('zs', axis='columns').reset_index(drop=True)
-
 
     if save:
         n = df["n"].max()
@@ -246,7 +251,7 @@ def run(n, use=7, zmax=32, dmax=15):
     if use <= processes:
         pool = Pool(processes=use)
     else:
-        pool = Pool() # Usar todos por defecto
+        pool = Pool()  # Usar todos por defecto
 
     # Calculando los z quirales
     vector_lk = l_and_k_arrays(n, dmax)
@@ -267,36 +272,12 @@ if __name__ == '__main__':
         input(
             "¿Hasta que valor de n quiere calcular las soluciones quirales?")
     )
-    results = 0
-    processes = cpu_count()  # Para saber cuántos procesadores tengo
-    use = 7  # Tengo 8, entonces usaré 7
-    print(f"I have {processes} cores here. Using: {use}")
-    pool = Pool(processes=use)
-    # Calculando los z quirales
-    results = pool.map(chiral_solution, np.arange(n, n + 1))
-    pool.close()
-    pool.join()
 
-    print(
-        f"Las soluciones se han calculado para {len(results)} valores" +
-        f" diferentes de n. El valor máximo es n = {n}"
-    )
-
-    df_sols = unique_solutions(results[0])
+    df_sols = run(n)
     print(df_sols)
 
-    # # Número de soluciones por cada n
-
-    # Se han considerado soluciones con enteros entre -32 y 32
-
-    Conteos = df_sols.groupby(["n"]).count()
-
-    print(Conteos)
-
-    # # Veamos si todas las soluciones obtenidas hasta $n=8$ son soluciones
-    # realmente
+    # # Veamos si todas las soluciones obtenidas son soluciones realmente
 
     for sols in df_sols["z"]:
         eq3, eq1 = eq_satisfied(sols)
         assert eq3 == 0 and eq1 == 0
-

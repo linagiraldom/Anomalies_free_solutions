@@ -37,7 +37,7 @@ def main():
         name="Anomalies_free_solutions",
 
         # Version number (initial):
-        version="0.0.2",
+        version="0.0.3",
 
         # Application author details:
         author="linagiraldom",
@@ -51,11 +51,11 @@ def main():
 
         # Details
         url="https://github.com/linagiraldom/Anomalies_free_solutions",
-        scripts=['bin/hello'],
+        scripts=['bin/anomalies'],
 
         license="BSD",
 
-        description="Hello World!",
+        description="Anomalies free solution",
 
         long_description=open("README.md").read(),
 
@@ -63,7 +63,7 @@ def main():
 
         # Dependent packages (distributions)
         # See: https://github.com/pypa/pipenv/issues/2171
-        # install_requires=[],
+        install_requires=['numpy>=1.21.5', 'pandas>=1.4.2', 'anomalies'],
     )
 
 
