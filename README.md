@@ -1,4 +1,4 @@
-# Template for GitHub actions for DevOps
+# Anomalies free solutions
 
 ![Python package](https://github.com/restrepo/DevOps/workflows/Python%20package/badge.svg)
 ![Upload Python Package](https://github.com/restrepo/DevOps/workflows/Upload%20Python%20Package/badge.svg)
