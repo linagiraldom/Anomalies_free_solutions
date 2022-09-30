@@ -7,13 +7,26 @@ The related software just print `Hello World!`. To avoid conflicts with the pack
 
 ## Install
 ```bash
-$ pip install -i https://test.pypi.org/simple/ desoper
+$ pip install -i https://test.pypi.org/simple/ Anomalies-free-solutions
 ```
 ## USAGE
 ```python
->>> from desoper import hello
->>> hello.hello()
-Hello World!
+>>> from anomalies_sol import Anomalies_free_solutions
+Anomalies_free_solutions.run(5)
+       l         k                      z  gcd
+0   [-2]   [-1, 2]     [2, 4, -7, -9, 10]    1
+1    [4]   [-1, 2]   [4, 9, -14, -25, 26]    1
+2    [1]  [-1, -5]  [2, 18, -23, -25, 28]    1
+3   [-1]   [1, -4]      [1, 5, -7, -8, 9]    2
+4    [5]   [-1, 2]   [5, 6, -12, -21, 22]    2
+5    [5]  [-1, -2]   [5, 8, -14, -26, 27]    2
+6    [1]   [-1, 6]  [1, 14, -17, -18, 20]    2
+7    [1]   [2, -3]  [7, 13, -25, -27, 32]    2
+8   [-3]   [-1, 4]   [7, 8, -17, -25, 27]    2
+9    [5]    [1, 2]   [7, 9, -20, -22, 26]    2
+10  [-6]   [-1, 2]   [7, 8, -18, -22, 25]    3
+11   [1]   [3, -1]  [5, 11, -18, -26, 28]    3
+
 ```
 Links:
 * [Test pip page](https://test.pypi.org/project/desoper/)
