@@ -8,7 +8,7 @@ https://doi.org/10.1103/PhysRevLett.123.151601
 
 ## Install
 ```bash
-$ pip install -i https://test.pypi.org/simple/ Anomalies-free-solutions==0.0.4
+$ pip install -i https://test.pypi.org/simple/ Anomalies-free-solutions==1.0
 ```
 ## USAGE
 ```python
