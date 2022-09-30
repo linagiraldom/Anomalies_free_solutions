@@ -29,6 +29,35 @@ Anomalies_free_solutions.run(5)
 11   [1]   [3, -1]  [5, 11, -18, -26, 28]    3
 
 ```
+
+Además, contiene el programa __anomalies__ que permite hallar las soluciones vía consola. Posee las siguientes opciones:
+```
+~$ anomalies -h
+usage: anomalies [-h] [--zmax ZMAX] [--m M] [--output_name OUTPUT_NAME]
+                 [--cores CORES]
+                 n
+
+positional arguments:
+  n                     Valor de n para el cual se van a calcular las
+                        soluciones
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --zmax ZMAX           Valor absoluto del entero más grande que puede
+                        contener las soluciones
+  --m M                 Entero máximo que contendrán l y k
+  --output_name OUTPUT_NAME, -on OUTPUT_NAME
+                        Guardar soluciones en un archivo json con nombre el
+                        nombre dado por el usuario
+  --cores CORES, -c CORES
+                        Cuántos núcleos desea usar para el multiprocessing
+```
+
+La siguiente es la forma de utilizar todas las opciones
+```
+~$ anomalies 6 --zmax=30 --m=8 --cores=5 --output_name=soluciones_n6
+```
+
 Links:
 * [Test pip page](https://test.pypi.org/project/desoper/)
 * Flake8 Tool For Style Guide Enforcement
