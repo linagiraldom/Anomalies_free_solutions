@@ -37,7 +37,7 @@ def main():
         name="Anomalies_free_solutions",
 
         # Version number (initial):
-        version="0.0.4",
+        version="1.0",
 
         # Application author details:
         author="linagiraldom",
