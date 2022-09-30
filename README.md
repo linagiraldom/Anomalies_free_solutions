@@ -3,7 +3,8 @@
 ![Python package](https://github.com/restrepo/DevOps/workflows/Python%20package/badge.svg)
 ![Upload Python Package](https://github.com/restrepo/DevOps/workflows/Upload%20Python%20Package/badge.svg)
 
-The related software just print `Hello World!`. To avoid conflicts with the package name, we use the Spanish translation _DesOper_
+Este paquete implementa la solución general propuesta por Costa, Dobrescu & Fox en su artículo "General Solution to the U(1) Anomaly Equations".
+https://doi.org/10.1103/PhysRevLett.123.151601
 
 ## Install
 ```bash
